@@ -77,7 +77,17 @@ class ProdutosController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        // $produto = Produto::find($request->input('id'));
+
+        // if(isset($produto))
+        // {
+        //     $produto->name = $request->input('name');
+        //     $produto->stock = $request->input('stock');
+        //     $produto->valor = $request->input('valor');
+        //     $produto->save();
+        // }
+
+        // return $produto;
     }
 
     /**
@@ -86,9 +96,17 @@ class ProdutosController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Customer $customer)
+    public function destroy($id)
     {
-        //
+        $produto = Produtos::find($id);
+
+        if(isset($produto))
+        {
+            $produto->delete();
+            return response('OK', 200);
+        }
+
+        return response('FALSE', 404);
     }
 
     public function indexJson()

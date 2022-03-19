@@ -93,6 +93,23 @@ $('#formCadastro').submit(function(e){
     $('#btn-close').click();
 });
 
+function deletaProduto(id)
+{
+    $.ajax({
+    method: "DELETE",
+    url: "/api/produtos/deleta/"+id,
+    context: this,
+    })
+    .done(function( msg ) {
+        alert( "Data Saved: " + msg );
+    });
+}
+
+function editarProduto(id)
+{
+    console.log(id);
+}
+
 
 function criarProduto(){
     produto = { 
@@ -115,10 +132,10 @@ function mostrarLinha(data)
                 "<td>"+data.name+"</td>"+
                 "<td>"+data.stock+"</td>"+
                 "<td>"+data.valor+"</td>"+
-                "<td>"+"<button type='button' class='btn btn-primary'>"+
+                "<td>"+"<button type='button' class='btn btn-primary' onclick='editarProduto("+data.id+")'>"+
                         "<i class='fa-solid fa-pen'></i>"+
                     "</button>"+
-                    "<button type='button' class='btn btn-danger'>"+
+                    "<button type='button' class='btn btn-danger' onclick='deletaProduto("+data.id+")'>"+
                         "<i class='fa-solid fa-trash'></i>"+
                     "</button>"+
                 "</td>"+
