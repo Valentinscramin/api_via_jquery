@@ -17,6 +17,7 @@
                     <th scope="col">Nome</th>
                     <th scope="col">Estoque</th>
                     <th scope="col">Valor</th>
+                    <th scope="col">Ação</th>
                 </tr>
                 </thead>
                 <tbody id="listagemProdutos">
@@ -32,7 +33,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Novo Produto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" id="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="form-cadastro" id="formCadastro">
                     <div class="modal-body">
@@ -89,7 +90,7 @@ function novoProduto(){
 $('#formCadastro').submit(function(e){
     e.preventDefault();
     criarProduto();
-    $('#modelId').hide();
+    $('#btn-close').click();
 });
 
 
@@ -101,16 +102,37 @@ function criarProduto(){
             };
 
     $.post("/api/produtos/novo", produto, function(data){
-        console.log(data);
+        produto = JSON.parse(data);
+        linha = mostrarLinha(produto);
+        $('#listagemProdutos').append(linha);
     });
+}
+
+function mostrarLinha(data)
+{
+    var linha = "<tr>"+
+                "<td>"+data.id+"</td>"+
+                "<td>"+data.name+"</td>"+
+                "<td>"+data.stock+"</td>"+
+                "<td>"+data.valor+"</td>"+
+                "<td>"+"<button type='button' class='btn btn-primary'>"+
+                        "<i class='fa-solid fa-pen'></i>"+
+                    "</button>"+
+                    "<button type='button' class='btn btn-danger'>"+
+                        "<i class='fa-solid fa-trash'></i>"+
+                    "</button>"+
+                "</td>"+
+                "</tr>"
+
+    return linha
 }
 
 function carregaProdutos(){
     $.getJSON('/api/produtos', function(data){
         for(i=0;i<data.length;i++)
         {
-            opcao = '<tr><td>'+ data[i].id +'</td><td>'+ data[i].name +'</td><td>'+ data[i].valor +'</td></tr>';
-            $('#listagemProdutos').append(opcao);
+            linha = mostrarLinha(data[i]);
+            $('#listagemProdutos').append(linha);
         }
     });
 }
