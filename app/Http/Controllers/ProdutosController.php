@@ -109,7 +109,7 @@ class ProdutosController extends Controller
         return response('FALSE', 404);
     }
 
-    public function indexJson()
+    public function index()
     {
         $produtos = Produtos::all();
         return json_encode($produtos);

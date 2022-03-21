@@ -97,11 +97,15 @@ function deletaProduto(id)
 {
     $.ajax({
     method: "DELETE",
-    url: "/api/produtos/deleta/"+id,
+    url: "/api/produtos/"+id,
     context: this,
     })
     .done(function( msg ) {
-        alert( "Data Saved: " + msg );
+        linhas = $('#listagemProdutos>tr');
+        e = linhas.filter(function(i, elemento){ 
+            return elemento.cells[0].textContent == id; 
+        });
+        e.remove();
     });
 }
 
@@ -118,7 +122,7 @@ function criarProduto(){
                 valor: $('#valorProduto').val()
             };
 
-    $.post("/api/produtos/novo", produto, function(data){
+    $.post("/api/produtos", produto, function(data){
         produto = JSON.parse(data);
         linha = mostrarLinha(produto);
         $('#listagemProdutos').append(linha);
