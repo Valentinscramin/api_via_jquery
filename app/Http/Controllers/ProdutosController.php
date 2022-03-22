@@ -52,9 +52,17 @@ class ProdutosController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function show(Customer $customer)
+    public function show($id)
     {
-        //
+
+        $produto = Produtos::find($id);
+
+        if ( isset($produto) )
+        {
+            return json_encode($produto);
+        }
+
+        return response("Produto não encontrado", 404);
     }
 
     /**
@@ -75,19 +83,21 @@ class ProdutosController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, $id)
     {
-        // $produto = Produto::find($request->input('id'));
+        $produto = Produtos::find($id);
 
-        // if(isset($produto))
-        // {
-        //     $produto->name = $request->input('name');
-        //     $produto->stock = $request->input('stock');
-        //     $produto->valor = $request->input('valor');
-        //     $produto->save();
-        // }
+        if( isset($produto) )
+        {
+            $produto->name = $request->input('name');
+            $produto->stock = $request->input('stock');
+            $produto->valor = $request->input('valor');
+            $produto->save();
 
-        // return $produto;
+            return json_encode($produto);
+        }
+
+        return response("Produto não encontrado", 404);
     }
 
     /**

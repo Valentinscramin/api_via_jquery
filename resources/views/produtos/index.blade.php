@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-12" style="margin:10px;">
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#modelId" onclick="novoProduto()">
+            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#modelId" id="novoProduto" onkeyup="novoProduto()">
                 Novo Produto
             </button>
             <table class="table">
@@ -38,7 +38,7 @@
                 <form class="form-cadastro" id="formCadastro">
                     <div class="modal-body">
 
-                        <input type="hidden" id="id" class="form-control">
+                        <input type="hidden" id="idCadastrado" class="form-control">
 
                         <div class="mb-3">
                             <label for="nomeProduto" class="form-label">Nome do produto</label>
@@ -82,6 +82,7 @@ $.ajaxSetup({
 });
 
 function novoProduto(){
+    $('#idCadastrado').val('');
     $('#nomeProduto').val('');
     $('#estoqueProduto').val('');
     $('#valorProduto').val('');
@@ -89,9 +90,52 @@ function novoProduto(){
 
 $('#formCadastro').submit(function(e){
     e.preventDefault();
-    criarProduto();
+
+    console.log($('#idCadastrado').val());
+
+    if( $('#idCadastrado').val() == '')
+    {
+        criarProduto();
+    }else{
+        salvarProdutoEditado();
+    }
     $('#btn-close').click();
 });
+
+function salvarProdutoEditado(){
+
+    produto = { 
+                id: $('#idCadastrado').val(),
+                name: $('#nomeProduto').val(), 
+                stock: $('#estoqueProduto').val(), 
+                valor: $('#valorProduto').val()
+            };
+
+    $.ajax({
+    method: "PUT",
+    url: "/api/produtos/"+produto.id,
+    context: this,
+    data: produto,
+    })
+    .done(function( data ) {
+
+        prod = JSON.parse(data);
+        linhas = $('#listagemProdutos>tr');
+
+        e = linhas.filter(function(i, elemento){ 
+            return elemento.cells[0].textContent == prod.id; 
+        });
+
+        if (e) {
+            e[0].cells[0].textContent = prod.id;
+            e[0].cells[1].textContent = prod.name;
+            e[0].cells[2].textContent = prod.stock;
+            e[0].cells[3].textContent = prod.valor;
+        }
+
+    });
+    
+}
 
 function deletaProduto(id)
 {
@@ -111,7 +155,16 @@ function deletaProduto(id)
 
 function editarProduto(id)
 {
-    console.log(id);
+    $.getJSON("/api/produtos/"+id, function(data){
+        console.log(data.name);
+        novoProduto();
+        $('#idCadastrado').val(data.id);
+        $('#nomeProduto').val(data.name);
+        $('#estoqueProduto').val(data.stock);
+        $('#valorProduto').val(data.valor);
+        $('#novoProduto').click();
+    });
+
 }
 
 
